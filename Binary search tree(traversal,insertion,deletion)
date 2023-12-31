@@ -1,0 +1,111 @@
+#include<iostream>
+#include<climits>
+using namespace std;
+struct node{
+    int key;
+    node* left;
+    node* right;
+    
+    node(int val){
+        key=val;
+        left=NULL;
+        right=NULL;
+    }
+};
+node* search(node* root,int key){
+    if(root==NULL || root->key==key){
+        return root;
+    }
+    if(key<root->key){
+        return search(root->left,key);
+    }
+    return search(root->right,key);
+}
+node* insert(node* root,int key){
+    if(root==NULL){
+        return new node(key);
+    }
+    if(key<root->key){
+        root->left=insert(root->left,key);
+    }
+    else if(key>root->key){
+        root->right=insert(root->right,key);
+    }
+    return root;
+}
+node* find_min(node* root){
+    while(root->left!=NULL){
+        root=root->left;
+    }
+    return root;
+}
+node* remove(node* root,int key){
+    if(root==NULL){
+        return NULL;
+    }
+    if(key<root->key){
+        root->left=remove(root->left,key);
+    }
+    else if(key>root->key){
+        root->right=remove(root->right,key);
+    }
+    else{
+        if(root->left==NULL){
+            node* temp=root->right;
+            delete root;
+            return temp;
+        }
+        else if(root->right==NULL){
+            node* temp=root->left;
+            delete root;
+            return temp;
+        }
+        node* temp=find_min(root->right);
+        root->key=temp->key;
+        root->right=remove(root->right,temp->key);
+    }
+    return root;
+}
+void inordertraversal(node* root){
+    if(root){
+        inordertraversal(root->left);
+        cout<<root->key<<" ";
+        inordertraversal(root->right);
+    }
+}
+int main(){
+    node* root=NULL;
+    root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    
+    cout<<"inorder traversal: ";
+    inordertraversal(root);
+    cout<<endl;
+    
+    int keytosearch;
+    cout<<"enter the element you want to search: ";
+    cin>>keytosearch;
+    node* foundnode=search(root,keytosearch);
+    if(foundnode){
+        cout<<"key "<<keytosearch<<" found in BST."<<endl;
+    }
+    else{
+        cout<<"key "<<keytosearch<<" not found in BST."<<endl;
+    }
+    
+    int keytoremove;
+    cout<<"enter the element you want to delete: "<<endl;
+    cin>>keytoremove;
+    root=remove(root,keytoremove);
+    
+    cout<<"inorder traversal after deletion: ";
+    inordertraversal(root);
+    cout<<endl;
+    return 0;
+    
+}
