@@ -1,0 +1,45 @@
+#include<iostream>
+#include<climits>
+using namespace std;
+struct node{
+    int data;
+    node* left;
+    node* right;
+    
+    node(int val){
+        data=val;
+        left=NULL;
+        right=NULL;
+    }
+};
+node* buildtree(int preorder[],int &index,int upperbound,int size){
+    if(index>=size || preorder[index]>upperbound){
+        return NULL;
+    }
+    node* n=new node(preorder[index]);
+    index++;
+    
+    n->left=buildtree(preorder,index,n->data,size);
+    n->left=buildtree(preorder,index,upperbound,size);
+    
+    return n;
+}
+void inordertraversal(node* root){
+    if(root){
+        inordertraversal(root->left);
+        cout<<root->data<<" ";
+        inordertraversal(root->right);
+    }
+}
+int main(){
+    int preorder[]={8,5,1,7,10,12};
+    int size=sizeof(preorder)/sizeof(preorder[0]);
+    int index=0;
+    node* root=buildtree(preorder,index,INT_MAX,size);
+    cout<<"inorder traversal of constructed tree: ";
+    inordertraversal(root);
+    return 0;
+}
+
+OUTPUT:
+inorder traversal of constructed tree: 1 5 7 8 10 12 
